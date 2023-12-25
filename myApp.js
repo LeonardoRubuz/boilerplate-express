@@ -1,5 +1,6 @@
 let express = require('express');
 let app = express();
+require('dotenv').config();
 
 console.log("Hello World");
 
@@ -8,7 +9,13 @@ console.log("Hello World");
 })
  */
 
+// Middlewares
+
 app.use("/public", express.static(__dirname + "/public"))
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path} - ${req.ip}`);
+    next()
+})
 
 const indexPath = __dirname + '/views/index.html'
 
@@ -17,7 +24,11 @@ app.get("/", (req, res) => {
 })
 
 app.get("/json", (req, res) => {
-    res.send({'message': "Hello json"})
+    if (process.env.MESSAGE_STYLE === "uppercase") {
+        res.send({'message': "Hello json".toUpperCase()})
+    }else{
+        res.send({'message': "Hello json"})
+    }
 })
 
 
